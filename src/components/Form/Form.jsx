@@ -1,14 +1,17 @@
 import {React, useState, useCallback, useEffect} from 'react';
 import './Form.css';
 import { useTelegram } from '../../hooks/useTelegram'; 
+
 export const Form =()=>{
     const [country,setCountry] = useState('');
     const[city, setCity] = useState('');
-    const [subject, setSubject] = useState('');
+    const [subject, setSubject] = useState('physical');
     const {tg} = useTelegram();
     const onSendData = useCallback( ()=>{
         const data = {
-            country, city, subject
+            country, 
+            city,
+             subject
         }
         tg.sendData(JSON.stringify(data))
     }, [city, country, subject])
@@ -18,14 +21,15 @@ export const Form =()=>{
         return() =>{
             tg.offEvent('mainButtonClicked', onSendData)
         }
-    })
+    }, [onSendData])
     useEffect(()=>{
         tg.MainButton.setParams({
             text: 'отправить личные данные арабу.'
         })
     }, [])
-    useEffect(()=>{
-        if (!street || !city){
+   
+        
+        if (!country || !city){
             tg.MainButton.hide();
         }else{
             tg.MainButton.show();
@@ -34,14 +38,14 @@ export const Form =()=>{
         const onChangeCity = (e) =>{
             setCity(e.target.value);
         }
-        const onChangeStreet = (e) =>{
-            setStreet(e.target.value);
+        const onChangeCountry = (e) =>{
+            setCountry(e.target.value);
         }
         const onChangeSubject = (e) =>{
             setSubject(e.target.value);
         }
     
-        }, [street, city])
+         
     return(
         <>
         <h3>введите свои данные, ок?</h3>
@@ -56,8 +60,8 @@ export const Form =()=>{
         className='input'
         type = 'text'
         placeholder='Улица'
-        value = {street}
-        onChange = {onChangeStreet}
+        value = {country}
+        onChange = {onChangeCountry}
         />
         <select value = {subject} onChange={onChangeSubject} className='select'>
             <option value={'legal'}>физ.лицо</option>
@@ -65,4 +69,4 @@ export const Form =()=>{
         </select>
         </>
     )
-}
+    }
